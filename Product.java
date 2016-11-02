@@ -51,13 +51,12 @@ public double getCount(){
 }
 
 
-
-public static Object[] getDrinks(){
-	Drink[] drinks = new Drink[] {coke1, coke2, coke3,  gatorade1, gatorade2, water1, water2, water3, water4};
+public static Product[] getDrinks(){
+	Product[] drinks = new Product[] {coke1, coke2, coke3,  gatorade1, gatorade2, water1, water2, water3, water4};
 	return drinks;
 }
-public static Object[] getSnacks(){
-	Snack[] snacks = new Snack[] {bubbleYum1, bubbleYum2, bubbleYum3, dentyne1, dentyne2, dentyne3, dentyne4,
+public static Product[] getSnacks(){
+	Product[] snacks = new Product[] {bubbleYum1, bubbleYum2, bubbleYum3, dentyne1, dentyne2, dentyne3, dentyne4,
 			 doritos1, doritos2, hershey1, hershey2, hershey3, hershey4, lays1, lays2, lays3, lays4, lifesavers1,
 			lifesavers2, lifesavers3};
 	return snacks;
@@ -75,4 +74,5 @@ public String toString(){
 	return productName + " " + pPrice;
 }
 }
+
 

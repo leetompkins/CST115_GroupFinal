@@ -18,7 +18,15 @@ public abstract class Snack extends Product{
 	}
 		@Override
 	public String toString(){
-		return snackName + " " + sPrice;
+		return "Snack";
+	}
+	
+	public String getName(){
+		return this.snackName;
+	}
+	
+	public double getPrice(){
+		return this.sPrice;
 	}
 
 }

@@ -23,5 +23,14 @@ public class MoneyManager {
 		
 	}
 	
+	public void purchase(){
+		if(this.total <= this.credit) {
+			this.credit = this.credit - this.total;
+			this.total = 0.00;
+		} else if(this.total > this.credit){
+			System.out.println("Not enough Money");
+		}
+	}
+	
 	
 }

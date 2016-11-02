@@ -18,7 +18,17 @@ public class Chips extends Snack{
 	}
 	@Override
 	public String toString(){
-		return chipsName + " " + chPrice;
+		return "Snack";
+	}
+	
+	@Override
+	public String getName(){
+		return this.chipsName;
+	}
+	
+	@Override
+	public double getPrice(){
+		return this.chPrice;
 	}
 
 }

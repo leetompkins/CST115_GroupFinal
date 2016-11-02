@@ -5,6 +5,7 @@ public class Drink extends Product{
 	private double dPrice;
 	Product[] allItems = new Product[9];
 	
+
 	public String getName() {
 		return this.drinkName;
 	}
@@ -27,7 +28,7 @@ public class Drink extends Product{
 		}
 	@Override
 	public String toString(){
-		return drinkName + " " + dPrice;
+		return "Drink";
 	}
 
 }

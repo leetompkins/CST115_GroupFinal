@@ -18,7 +18,16 @@ public class Candy extends Snack{
 	}
 	@Override
 	public String toString(){
-		return candyName + " " + cPrice;
+		return "Snack";
 	}
 
+	@Override
+	public String getName(){
+		return this.candyName;
+	}
+	
+	@Override
+	public double getPrice(){
+		return this.cPrice;
+	}
 }

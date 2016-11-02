@@ -18,7 +18,15 @@ public class Gum extends Snack{
 	}
 	@Override
 	public String toString(){
-		return gumName + " " + gPrice;
+		return "Snack";
+	}
+	@Override
+	public String getName(){
+		return this.gumName;
+	}
+	@Override
+	public double getPrice(){
+		return this.gPrice;
 	}
 
 }

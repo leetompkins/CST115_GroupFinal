@@ -1,4 +1,5 @@
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 import javafx.animation.PathTransition; 
@@ -28,11 +29,21 @@ public class Dispenser extends Application{
 	public void start(Stage primaryStage){
 		
 // Construct the MoneyManager 
-		
+		DecimalFormat df = new DecimalFormat("#.00");
 		MoneyManager moneyManager = new MoneyManager();
+		Product[] productList = new Product[29];
 		
 		Object[] drinksList = Product.getDrinks();
+		
 		Object[] snackList = Product.getSnacks();
+	
+		for(int i = 0; i < drinksList.length; i++){
+			productList[i] = (Product) drinksList[i];
+		}
+		for(int i = drinksList.length; i < (productList.length); i++){
+			productList[i] =  (Product) snackList[i - drinksList.length];
+		}
+		
 		ArrayList<Product> purchasedItems = new ArrayList<Product>();
 		ObservableList<Product> checkoutItems = FXCollections.observableArrayList(purchasedItems);
 // Create Observable Lists 
@@ -47,6 +58,7 @@ public class Dispenser extends Application{
 		HBox hbCenterTop = new HBox();
 		HBox hbCenterBottom = new HBox();
 		HBox hbTop = new HBox();
+		HBox hbBottom = new HBox();
 		ListView<Product> lvCheckout = new ListView<Product>();
 		lvCheckout.setCellFactory((list) -> {
 			return new ListCell<Product>() {
@@ -56,8 +68,16 @@ public class Dispenser extends Application{
 					if (item == null || empty){
 						setText(null);
 					} else {
-						setText(((Drink) item).getName());
-					}
+						if(item.toString() == "Drink") {
+							setText(((Drink) item).getName());
+						} else {
+							setText(((Snack) item).getName());
+						}
+						
+						
+					} 
+						
+					
 				}
 			};
 		});
@@ -71,7 +91,8 @@ public class Dispenser extends Application{
 		
 		
 
-//Buttons
+//------------------------------------<Buttons, Labels, TextFields>--------------------------------------------\\
+		
 		
 				Button btnCheckout = new Button("Checkout");
 				btnCheckout.setPrefWidth(150);
@@ -86,7 +107,7 @@ public class Dispenser extends Application{
 				btnBoss.setPrefWidth(150);
 				Button btnCoke = new Button("Coke");
 				btnCoke.setPrefSize(326.6667, 600);
-				Button btnRefresh = new Button("Refresh");
+				
 				Button btnGatorade = new Button("Gatorade");
 				btnGatorade.setPrefSize(326.6667, 600);
 				Button btnWater = new Button("Water");
@@ -107,6 +128,17 @@ public class Dispenser extends Application{
 				btnDentyne.setPrefSize(326.6667, 300);
 				Button btnHome = new Button("Home");
 				btnHome.setPrefSize(1280, 100);
+				
+				// Money Buttons 
+				Button btnDollar = new Button("Dollar");
+				btnDollar.setPrefSize(300, 80);
+				Button btnQuater = new Button("Quarter");
+				btnQuater.setPrefSize(300, 80);
+				Button btnDime = new Button("Dime");
+				btnDime.setPrefSize(300, 80);
+				Button btnNickel = new Button("Nickel");
+				btnNickel.setPrefSize(300, 80);
+				
 				TextField tfTotal = new TextField();
 				tfTotal.setText("");
 				tfTotal.setEditable(false);
@@ -126,6 +158,8 @@ public class Dispenser extends Application{
 				TextField tfUsername = new TextField("Username");
 				PasswordField pfPassword = new PasswordField();
 				
+//-----------------------------------<Set Pane Content>-------------------------------------------------------------------------------\\
+				
 				hbTop.getChildren().add(btnHome);
 				bpMain.setTop(hbTop);
 				
@@ -134,18 +168,21 @@ public class Dispenser extends Application{
 				bpMain.setLeft(vbBoss);
 				
 				vbCheckout.setPrefWidth(150);
-				vbCheckout.getChildren().addAll(lvCheckout,btnRemove,btnRefresh,lbTotal,tfTotal,lbCredit,tfCredit,btnCheckout);
+				vbCheckout.getChildren().addAll(lvCheckout,btnRemove,lbTotal,tfTotal,lbCredit,tfCredit,btnCheckout);
 				bpMain.setRight(vbCheckout);
 				
 				hbCenterTop.getChildren().addAll(btnDrinks,btnSnacks);
 				vbCenter.getChildren().add(hbCenterTop);
 				vbCenter.getChildren().add(hbCenterBottom);
+				hbBottom.setAlignment(Pos.CENTER);
+				hbBottom.getChildren().addAll(btnDollar,btnQuater,btnDime,btnNickel);
+				bpMain.setBottom(hbBottom);
 				bpMain.setCenter(vbCenter);
 				
 				
 				
 		
-//Product images
+//------------------------------------------<Product Images>---------------------------------------------------------------------------//
 				
 				ImageView imgDrink = new ImageView(
 						"https://images.vat19.com/covers/large/soda-bottle-lip-balms.jpg");
@@ -165,62 +202,82 @@ public class Dispenser extends Application{
 						btnSnacks.setGraphic(imgSnacks);
 						btnSnacks.setText("");
 						
-				ImageView gatorImage1 = new ImageView(
-						"http://www.bluedaring.com/BlueDaring/wp-content/uploads/2014/04/gatorade-blue-raspberry_1.png");
-						gatorImage1.setFitHeight(50);
-						gatorImage1.setFitWidth(50);
-
+				ImageView imgGatorade = new ImageView(
+						"http://cdn.shopify.com/s/files/1/0286/5470/products/G_CoolBlue_20oz.png?v=1427213068");
+						imgGatorade.setFitHeight(600);
+						imgGatorade.setFitWidth(310);
+						btnGatorade.setGraphic(imgGatorade);
+						btnGatorade.setText("");
 						
 				ImageView imgCoke = new ImageView(
 						"http://www.coca-colaproductfacts.com/content/dam/productfacts/us/productDetails/ProductImages/Coke_20oz.png");
-						imgCoke.setFitHeight(50);
-						imgCoke.setFitWidth(50);
-						StackPane spAnimationCoke = new StackPane();
+						imgCoke.setFitHeight(600);
+						imgCoke.setFitWidth(310);
+						btnCoke.setGraphic(imgCoke);
+						btnCoke.setText("");
+						
 						
 
 						
-				ImageView waterImage1 = new ImageView(
-						"http://www.underconsideration.com/brandnew/archives/aquafina_packaging.jpg");
-						waterImage1.setFitHeight(50);
-						waterImage1.setFitWidth(50);
+				ImageView imgWater = new ImageView(
+						"http://fijiwater.com.au/wp-content/uploads/2013/01/Bottle-3.png");
+						imgWater.setFitHeight(600);
+						imgWater.setFitWidth(310);
+						btnWater.setGraphic(imgWater);
+						btnWater.setText("");
 
 						
-				ImageView bubbleImage1 = new ImageView(
-						"https://s3.amazonaws.com/static.caloriecount.about.com/images/medium/bubble-yum-gum-balls-36614.jpg");
-						bubbleImage1.setFitHeight(50);
-						bubbleImage1.setFitWidth(50);
+				ImageView imgBubbleYum = new ImageView(
+						"https://cdn.shopify.com/s/files/1/0972/7116/products/bubble-yum-original-bubble-gum-5-piece-pack.png?v=1459346042");
+						imgBubbleYum.setFitHeight(290);
+						imgBubbleYum.setFitWidth(290);
+						btnBubbleYum.setGraphic(imgBubbleYum);
+						btnBubbleYum.setText("");
 
 								
-				ImageView dentyneImage1 = new ImageView(
+				ImageView imgDentyne = new ImageView(
 						"http://www.dentyne.com/img/products/ice-peppermint.png");
-						dentyneImage1.setFitHeight(50);
-						dentyneImage1.setFitWidth(50);
+						imgDentyne.setFitHeight(290);
+						imgDentyne.setFitWidth(290);
+						btnDentyne.setGraphic(imgDentyne);
+						btnDentyne.setText("");
 
 						
-				ImageView doritoImage1 = new ImageView(
+				ImageView imgDoritos = new ImageView(
 						"http://www.fritolay.com/images/default-source/blue-bag-image/doritos-nacho-cheese.png?sfvrsn=2");
-						doritoImage1.setFitHeight(50);
-						doritoImage1.setFitWidth(50);
+						imgDoritos.setFitHeight(290);
+						imgDoritos.setFitWidth(290);
+						btnDoritos.setGraphic(imgDoritos);
+						btnDoritos.setText("");
 
 						
-				ImageView hersheyImage1 = new ImageView(
-						"https://images-na.ssl-images-amazon.com/images/I/71dZCgM7vOL._SL1500_.jpg");
-						hersheyImage1.setFitHeight(50);
-						hersheyImage1.setFitWidth(50);
+				ImageView imgHershey = new ImageView(
+						"https://upload.wikimedia.org/wikipedia/commons/1/1b/Hershey's_Milk_Chocolate_wrapper_(2012-2015).png");
+						imgHershey.setFitHeight(290);
+						imgHershey.setFitWidth(290);
+						btnHershey.setGraphic(imgHershey);
+						btnHershey.setText("");
 
 					
-				ImageView laysImage1 = new ImageView(
+				ImageView imgLays = new ImageView(
 						"http://www.fritolay.com/images/default-source/blue-bag-image/lays-classic.tmb-.png?sfvrsn=1");
-						laysImage1.setFitHeight(50);
-						laysImage1.setFitWidth(50);
+						imgLays.setFitHeight(290);
+						imgLays.setFitWidth(290);
+						btnLays.setGraphic(imgLays);
+						btnLays.setText("");
 
 						
-				ImageView lifesaversImage1 = new ImageView(
+				ImageView imgLifeSavers = new ImageView(
 						"http://www.life-savers.com/www/img/products_pic/hard_candies/5_flavors_roll.png");
-						lifesaversImage1.setFitHeight(50);
-						lifesaversImage1.setFitWidth(50);
+						imgLifeSavers.setFitHeight(290);
+						imgLifeSavers.setFitWidth(290);
+						btnLifeSaver.setGraphic(imgLifeSavers);
+						btnLifeSaver.setText("");
 						
 						
+// ---------------------------------------------<BUTTON ACTIONS>------------------------------------------------------------------------\\
+						
+						// Drink Button
 						btnDrinks.setOnAction(new EventHandler<ActionEvent>(){
 							@Override
 							public void handle(ActionEvent e) {
@@ -229,6 +286,7 @@ public class Dispenser extends Application{
 							}
 						});
 						
+						// Snack Button
 						btnSnacks.setOnAction(new EventHandler<ActionEvent>(){
 							@Override
 							public void handle(ActionEvent e) {
@@ -238,27 +296,27 @@ public class Dispenser extends Application{
 							}
 						});
 						
+						// Coke Button
 						btnCoke.setOnAction(new EventHandler<ActionEvent>(){
 
 							@Override
 							public void handle(ActionEvent e) {
-								for (int i = 0; i < drinksList.length; i++) {
+								for (int i = 0; i < productList.length; i++) {
 									lvCheckout.setItems(checkoutItems);
-									if(drinksList[i] == null) {
+									if(productList[i] == null) {
 										System.out.println("");
 									} else {
 									
-									if(((Drink) drinksList[i]).getName().equals("Coke")) {
-										purchasedItems.add((Product) drinksList[i]);
-										tfTotal.setText("$" + ((((Product) drinksList[i]).getPrice()) + moneyManager.getTotal()));
-										moneyManager.setTotal(moneyManager.getTotal() + ((Product) drinksList[i]).getPrice());
-										drinksList[i] = null;
+									if(((Drink) productList[i]).getName().equals("Coke")) {
+										purchasedItems.add((Product) productList[i]);
+										tfTotal.setText("$" + ((((Product) productList[i]).getPrice()) + moneyManager.getTotal()));
+										moneyManager.setTotal(moneyManager.getTotal() + ((Product) productList[i]).getPrice());
+										productList[i] = null;
 										checkoutItems.removeAll(purchasedItems);
 										checkoutItems.addAll(purchasedItems);
 										lvCheckout.setItems(checkoutItems);
-										lvCheckout.refresh();
 										System.out.println("Coke Button");
-										i = drinksList.length + 1;
+										i = productList.length + 1;
 
 									
 									} else {
@@ -271,21 +329,302 @@ public class Dispenser extends Application{
 							
 						});
 						
-						lvCheckout.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-							
-							btnRefresh.setOnAction(new EventHandler<ActionEvent>(){
+						// Gatorade Button
+						btnGatorade.setOnAction(new EventHandler<ActionEvent>(){
 
-								@Override
-								public void handle(ActionEvent event) {
+							@Override
+							public void handle(ActionEvent event) {
+								for (int i = 0; i < productList.length; i++) {
 									lvCheckout.setItems(checkoutItems);
+									if(productList[i] == null) {
+										System.out.println("");
+									} else {
 									
+									if(((Drink) productList[i]).getName().equals("Gatorade")) {
+										purchasedItems.add((Product) productList[i]);
+										tfTotal.setText("$" + ((((Product) productList[i]).getPrice()) + moneyManager.getTotal()));
+										moneyManager.setTotal(moneyManager.getTotal() + ((Product) productList[i]).getPrice());
+										productList[i] = null;
+										checkoutItems.removeAll(purchasedItems);
+										checkoutItems.addAll(purchasedItems);
+										lvCheckout.setItems(checkoutItems);
+										System.out.println("Gatorade Button");
+										i = productList.length + 1;
+
+									
+									} else {
+										System.out.println("No Gatorade at index: " + i);
+									}
+									}
 								}
 								
-								
-							});
+							}
 							
 						});
 						
+						// Water Button
+						btnWater.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								for (int i = 0; i < productList.length; i++) {
+									lvCheckout.setItems(checkoutItems);
+									if(productList[i] == null) {
+										System.out.println("");
+									} else {
+									
+									if(((Drink) productList[i]).getName().equals("Water")) {
+										purchasedItems.add((Product) productList[i]);
+										tfTotal.setText("$" + ((((Product) productList[i]).getPrice()) + moneyManager.getTotal()));
+										moneyManager.setTotal(moneyManager.getTotal() + ((Product) productList[i]).getPrice());
+										productList[i] = null;
+										checkoutItems.removeAll(purchasedItems);
+										checkoutItems.addAll(purchasedItems);
+										lvCheckout.setItems(checkoutItems);
+										System.out.println("Water Button");
+										i = productList.length + 1;
+
+									
+									} else {
+										System.out.println("No Water at index: " + i);
+									}
+									}
+								}
+								
+							}
+							
+						});
+						
+						// BubbleYum Button
+						btnBubbleYum.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								for (int i = 0; i < productList.length; i++) {
+									lvCheckout.setItems(checkoutItems);
+									if(productList[i] == null) {
+										System.out.println("");
+									} else {
+									
+									if(((Product) productList[i]).toString() == ("Snack")) {
+										
+										if(((Snack) productList[i]).getName().equals("Bubble Yum")) {
+										purchasedItems.add((Product) productList[i]);
+										tfTotal.setText("$" + ((((Product) productList[i]).getPrice()) + moneyManager.getTotal()));
+										moneyManager.setTotal(moneyManager.getTotal() + ((Product) productList[i]).getPrice());
+										productList[i] = null;
+										checkoutItems.removeAll(purchasedItems);
+										checkoutItems.addAll(purchasedItems);
+										lvCheckout.setItems(checkoutItems);
+										
+										i = productList.length + 1;
+										} else {
+											System.out.println("null");
+										}
+
+									
+									} else {
+										System.out.println("No BubbleYum at index: " + i);
+									}
+									
+									}
+								}
+								
+							}
+							
+						});
+						// Dentyne Button
+						btnDentyne.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								for (int i = 0; i < productList.length; i++) {
+									lvCheckout.setItems(checkoutItems);
+									if(productList[i] == null) {
+										System.out.println("");
+									} else {
+									
+									if(((Product) productList[i]).toString() == ("Snack")) {
+										
+										if(((Snack) productList[i]).getName().equals("Dentyne")) {
+										purchasedItems.add((Product) productList[i]);
+										tfTotal.setText("$" + ((((Product) productList[i]).getPrice()) + moneyManager.getTotal()));
+										moneyManager.setTotal(moneyManager.getTotal() + ((Product) productList[i]).getPrice());
+										productList[i] = null;
+										checkoutItems.removeAll(purchasedItems);
+										checkoutItems.addAll(purchasedItems);
+										lvCheckout.setItems(checkoutItems);
+										
+										i = productList.length + 1;
+										} else {
+											System.out.println("null");
+										}
+
+									
+									} else {
+										System.out.println("No Dentyne at index: " + i);
+									}
+									
+									}
+								}
+								
+							}
+							
+						});
+						// Lays Button
+						btnLays.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								for (int i = 0; i < productList.length; i++) {
+									lvCheckout.setItems(checkoutItems);
+									if(productList[i] == null) {
+										System.out.println("");
+									} else {
+									
+									if(((Product) productList[i]).toString() == ("Snack")) {
+										
+										if(((Snack) productList[i]).getName().equals("Lays")) {
+										purchasedItems.add((Product) productList[i]);
+										tfTotal.setText("$" + ((((Product) productList[i]).getPrice()) + moneyManager.getTotal()));
+										moneyManager.setTotal(moneyManager.getTotal() + ((Product) productList[i]).getPrice());
+										productList[i] = null;
+										checkoutItems.removeAll(purchasedItems);
+										checkoutItems.addAll(purchasedItems);
+										lvCheckout.setItems(checkoutItems);
+										
+										i = productList.length + 1;
+										} else {
+											System.out.println("null");
+										}
+
+									
+									} else {
+										System.out.println("No Lays at index: " + i);
+									}
+									
+									}
+								}
+								
+							}
+							
+						});
+						// Doritos Button
+						btnDoritos.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								for (int i = 0; i < productList.length; i++) {
+									lvCheckout.setItems(checkoutItems);
+									if(productList[i] == null) {
+										System.out.println("");
+									} else {
+									
+									if(((Product) productList[i]).toString() == ("Snack")) {
+										
+										if(((Snack) productList[i]).getName().equals("Doritos")) {
+										purchasedItems.add((Product) productList[i]);
+										tfTotal.setText("$" + ((((Product) productList[i]).getPrice()) + moneyManager.getTotal()));
+										moneyManager.setTotal(moneyManager.getTotal() + ((Product) productList[i]).getPrice());
+										productList[i] = null;
+										checkoutItems.removeAll(purchasedItems);
+										checkoutItems.addAll(purchasedItems);
+										lvCheckout.setItems(checkoutItems);
+										
+										i = productList.length + 1;
+										} else {
+											System.out.println("null");
+										}
+
+									
+									} else {
+										System.out.println("No Doritos at index: " + i);
+									}
+									
+									}
+								}
+								
+							}
+							
+						});
+						// Hershey Button
+						btnHershey.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								for (int i = 0; i < productList.length; i++) {
+									lvCheckout.setItems(checkoutItems);
+									if(productList[i] == null) {
+										System.out.println("");
+									} else {
+									
+									if(((Product) productList[i]).toString() == ("Snack")) {
+										
+										if(((Snack) productList[i]).getName().equals("Hershey")) {
+										purchasedItems.add((Product) productList[i]);
+										tfTotal.setText("$" + ((((Product) productList[i]).getPrice()) + moneyManager.getTotal()));
+										moneyManager.setTotal(moneyManager.getTotal() + ((Product) productList[i]).getPrice());
+										productList[i] = null;
+										checkoutItems.removeAll(purchasedItems);
+										checkoutItems.addAll(purchasedItems);
+										lvCheckout.setItems(checkoutItems);
+										
+										i = productList.length + 1;
+										} else {
+											System.out.println("null");
+										}
+
+									
+									} else {
+										System.out.println("No Hersheys at index: " + i);
+									}
+									
+									}
+								}
+								
+							}
+							
+						});
+						// Lifesavers Button
+						btnLifeSaver.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								for (int i = 0; i < productList.length; i++) {
+									lvCheckout.setItems(checkoutItems);
+									if(productList[i] == null) {
+										System.out.println("");
+									} else {
+									
+									if(((Product) productList[i]).toString() == ("Snack")) {
+										
+										if(((Snack) productList[i]).getName().equals("Lifesavers")) {
+										purchasedItems.add((Product) productList[i]);
+										tfTotal.setText("$" + ((((Product) productList[i]).getPrice()) + moneyManager.getTotal()));
+										moneyManager.setTotal(moneyManager.getTotal() + ((Product) productList[i]).getPrice());
+										productList[i] = null;
+										checkoutItems.removeAll(purchasedItems);
+										checkoutItems.addAll(purchasedItems);
+										lvCheckout.setItems(checkoutItems);
+										
+										i = productList.length + 1;
+										} else {
+											System.out.println("null");
+										}
+
+									
+									} else {
+										System.out.println("No Lifesavers at index: " + i);
+									}
+									
+									}
+								}
+								
+							}
+							
+						});
+						
+						// Reset  View to Start-up View
 						btnHome.setOnAction(new EventHandler<ActionEvent>(){
 
 							@Override
@@ -299,26 +638,112 @@ public class Dispenser extends Application{
 							}
 							
 						});
+						
+						btnDollar.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								moneyManager.setCredit((moneyManager.getCredit() + 1.00));
+								tfCredit.setText("$" + df.format(moneyManager.getCredit()));
+							}
+							
+						});
+						btnQuater.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								moneyManager.setCredit((moneyManager.getCredit() + 0.25));
+								tfCredit.setText("$" + df.format(moneyManager.getCredit()));
+							}
+							
+						});
+						btnDime.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								moneyManager.setCredit((moneyManager.getCredit() + 0.10));
+								tfCredit.setText("$" + df.format(moneyManager.getCredit()));
+							}
+							
+						});
+						btnNickel.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								moneyManager.setCredit((moneyManager.getCredit() + 0.05));
+								tfCredit.setText("$" + df.format(moneyManager.getCredit()));
+							}
+							
+						});
+						//Checkout Button
+						btnCheckout.setOnAction(new EventHandler<ActionEvent>(){
+
+							@Override
+							public void handle(ActionEvent event) {
+								if(moneyManager.getCredit() >= moneyManager.getTotal()) {
+									moneyManager.purchase();
+									tfCredit.setText("$" + df.format(moneyManager.getCredit()));
+									tfTotal.setText("$" + df.format(moneyManager.getTotal()));
+									checkoutItems.removeAll(purchasedItems);
+									purchasedItems.removeAll(purchasedItems);
+									checkoutItems.addAll(purchasedItems);
+									lvCheckout.setItems(checkoutItems);
+									
+								} else {
+								  System.out.println("Need mas monies");
+								}
+								
+							}
+							
+						});
+						
+						
+						
+//---------------------------------------------<ListView Listeners and Relevant Buttons>-----------------------------------------\\
+						
+						
+						
+						
+						
+						lvCheckout.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+							
+							// Remove Item from checkout button
+							
+							btnRemove.setOnAction(new EventHandler<ActionEvent>(){
+
+								@Override
+								public void handle(ActionEvent arg0) {
+									// Set the total price field 
+									moneyManager.setTotal(moneyManager.getTotal() - ((Product) newValue).getPrice());
+									tfTotal.setText("$" +  moneyManager.getTotal());
+									
+									// Reset the ListView and Re-Add the checkout item to productList
+									
+									checkoutItems.removeAll(purchasedItems);
+									purchasedItems.remove(newValue);
+									checkoutItems.addAll(purchasedItems);
+									lvCheckout.setItems(checkoutItems);
+									for(int i = 0; i < productList.length; i++) {
+										if(productList[i] == (null)) {
+											productList[i] = newValue;
+											i = productList.length;
+										} else {
+											//Carry on 
+										}
+									}
+									
+								}
+								
+							});
+							
+							
+						});
+						
+						// Reset GUI to Main view on startup
+						
+						
 		
 
-					    /*
-					    lifesavers3.setOnAction(new EventHandler<ActionEvent>() {
-				            @Override
-				            public void handle(ActionEvent event) {
-				            	PathTransition pt = new PathTransition();
-				            	pt.setDuration(Duration.millis(2500)); 
-				         		pt.setPath(line6); 
-				         		pt.setNode(lifesavers3); 
-				         		pt.setOrientation(PathTransition.OrientationType.NONE); 
-				         		pt.setCycleCount(1);  // 
-				         		pt.setAutoReverse(false); 
-				         		pt.play();
-				            	lifesaversItem.getChildren().removeAll(lifesavers1, lifesavers2, lifesavers3);
-				            	purchasedItems[28] = snackList[19];
-				            	purchased.add(lifesavers3, 1, 8);
-				            }
-				        });
-				        */
 //Set scene and show.	
 		Scene scene = new Scene(bpMain, 1280, 800);
 		primaryStage.setTitle("Vending machine GUI");
